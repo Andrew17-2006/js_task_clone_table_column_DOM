@@ -1,6 +1,6 @@
 'use strict';
 
-function cloneTableColumn(table, fromIndex, insertBeforeIndex) {
+function cloneColumnBeforeLast(table, fromIndex) {
   const sections = ['thead', 'tbody', 'tfoot'];
 
   sections.forEach((section) => {
@@ -10,19 +10,20 @@ function cloneTableColumn(table, fromIndex, insertBeforeIndex) {
       return;
     }
 
-    const rows = part.rows;
-
-    for (const row of rows) {
+    for (const row of part.rows) {
       const cells = row.cells;
-      const cellToClone = cells[fromIndex];
+      const source = cells[fromIndex];
 
-      if (!cellToClone) {
+      if (!source || cells.length === 0) {
         continue;
       }
 
-      const clonedCell = cellToClone.cloneNode(true);
+      const clone = source.cloneNode(true);
 
-      row.insertBefore(clonedCell, cells[insertBeforeIndex]);
+      const lastIndex = cells.length - 1;
+      const lastCell = cells[lastIndex];
+
+      row.insertBefore(clone, lastCell);
     }
   });
 }
@@ -34,5 +35,5 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  cloneTableColumn(table, 1, 4);
+  cloneColumnBeforeLast(table, 1);
 });
